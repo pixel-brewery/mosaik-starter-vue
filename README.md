@@ -10,10 +10,11 @@ A standalone **Vue + TypeScript + Vite** application using the published Mosaik 
 
 ## Install and run
 
-Set `MOSAIK_PACKAGES_TOKEN` in your shell using your own package-read token. Do not commit its value. The checked-in `.npmrc` contains only the registry mapping and the environment-variable reference.
+Set `MOSAIK_PACKAGES_TOKEN` in your shell using your own package-read token. Do not commit its value. The checked-in `.npmrc` maps the package scope to GitHub Packages. `.npmrc.auth` contains only an environment-variable reference for authentication; select it as the npm user configuration below.
 
 ```sh
 export MOSAIK_PACKAGES_TOKEN='<your read:packages token>'
+export NPM_CONFIG_USERCONFIG="$PWD/.npmrc.auth"
 npm ci
 npm run dev
 ```
@@ -48,21 +49,33 @@ The example adapts the Mosaik Studio catalog recipe `recipe-empty-state-card--wi
 
 This repository has its own framework/toolchain versions, Mosaik package pins, lockfile and CI. It does not depend on an Nx workspace, a Mosaik checkout, the Studio API or a shared Mosaik release workflow.
 
-Update this starter's framework independently, regenerate its lockfile with npm and run all verification commands. Upgrade Mosaik packages as a separate deliberate change, keeping related Mosaik packages on a compatible version. No framework or Mosaik upgrade is performed automatically. The application package is private to prevent accidental npm publication.
+Framework and toolchain upgrades remain independent of Mosaik dependency updates: update this starter, regenerate its lockfile with npm and run all verification commands. The application package is private to prevent accidental npm publication.
+
+Direct and transitive Mosaik packages use one exact release in the manifest and lockfile. The earlier core override is no longer needed following the published casing fix tracked in [the packaging issue](https://github.com/RueDeRennes/mosaik/issues/770).
+
+## Mosaik updates
+
+`.github/dependabot.yml` checks for updates every day at 04:37 UTC, including weekends, and groups `@pixel-brewery/mosaik-*` updates into one pull request. Updates retain exact package versions and include the committed `package-lock.json`. This replaces manual edits to each Mosaik dependency while keeping framework/toolchain updates separate.
+
+Each update pull request still requires review, approval and merge. No automatic merge is configured. CI checks require consistent Mosaik versions alongside the existing lint, type/template checks, counter behavior test and production build.
+
+For automatic GitHub Packages authentication, grant this repository **Read** access under every required Mosaik package's **Package settings → Manage Actions access**. Repeat this for each starter or repository created from a template. No long-lived Dependabot token is needed. See [GitHub's automatic registry access documentation](https://docs.github.com/en/code-security/concepts/supply-chain-security/automatic-dependabot-access-to-github-registries).
+
+Keep `.github/dependabot.yml` on the repository's default branch and enable Dependabot version updates. The package access grants above are required for updates to run.
+
+Authentication is kept in `.npmrc.auth` so Dependabot sees only the registry mapping in `.npmrc` and can use its automatic GitHub Packages credentials. Local npm commands and CI select `.npmrc.auth` with `NPM_CONFIG_USERCONFIG`; keep its token value in the environment.
+
+Mosaik packages bypass the default Dependabot cooldown, so a newly published release is eligible at the next daily check.
 
 ## Continuous integration
 
-The repository's CI runs a clean `npm ci`, lint, typecheck, behavior tests and production build. It uses its own GitHub Actions token with `contents: read` and `packages: read`; no reusable personal credential is stored in the workflow. If you change to private packages, grant that repository the required package access before expecting CI to install them.
+The repository's CI runs a clean `npm ci`, lint, typecheck, behavior tests and production build. The update checks also verify consistent Mosaik package versions in the manifest and lockfile. CI uses its own GitHub Actions token with `contents: read` and `packages: read`; the package access grants described above apply to both CI and Dependabot. No reusable personal credential is stored in the workflow.
 
 CI only verifies the application. It does not publish packages, create release tags or deploy a website.
 
 ## Current published-package limitations
 
-The published `mosaik-elements` core package has inconsistent import/folder casing in 0.1.174–0.1.177, which breaks Linux builds. This starter therefore uses an explicit npm override for **`@pixel-brewery/mosaik-elements@0.1.171`**, while the framework/Foundation/theme/icon packages remain pinned at 0.1.177. The public core type contracts match; 16 of 17 runtime modules are unchanged apart from path casing. The older core retains its earlier `orderBy` sorting behavior and does not contain the later sorting corrections. The demo does not use those helpers. See [the packaging issue and removal prerequisite](https://github.com/RueDeRennes/mosaik/issues/770).
-
-Keep this override until the owner publishes a corrected core version and you verify the new version on a case-sensitive system. To adopt that release, update the relevant Mosaik pins, remove the override, regenerate the lockfile and run all checks in this repository.
-
-Mosaik 0.1.177's supported root entry points retain a large core component/style graph even for this small example. Production entry bundles are currently approximately 14–15 MB before transfer compression. This starter preserves the supported APIs; it does not patch dependencies or suppress component registration. See [the package-boundary issue](https://github.com/RueDeRennes/mosaik/issues/964).
+Mosaik's supported root entry points retain a large core component/style graph even for this small example. Production entry bundles are currently approximately 14–16 MB before transfer compression. This starter preserves the supported APIs; it does not patch dependencies or suppress component registration. See [the package-boundary issue](https://github.com/RueDeRennes/mosaik/issues/964).
 
 Published dependency source maps currently refer to sources absent from the installed packages, so tests can emit third-party source-map warnings. They do not prevent the verification commands from passing. See [the source-map issue](https://github.com/RueDeRennes/mosaik/issues/963).
 
