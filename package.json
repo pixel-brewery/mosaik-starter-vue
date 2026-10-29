@@ -17,10 +17,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@pixel-brewery/mosaik-elements-foundation": "0.1.179",
-    "@pixel-brewery/mosaik-elements-vue": "0.1.179",
-    "@pixel-brewery/mosaik-icons": "0.1.179",
-    "@pixel-brewery/mosaik-themes": "0.1.179",
+    "@pixel-brewery/mosaik-elements-foundation": "0.1.183",
+    "@pixel-brewery/mosaik-elements-vue": "0.1.183",
+    "@pixel-brewery/mosaik-icons": "0.1.183",
+    "@pixel-brewery/mosaik-themes": "0.1.183",
     "reflect-metadata": "0.2.2",
     "vue": "3.5.44"
   },

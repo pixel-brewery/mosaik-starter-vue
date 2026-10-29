@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import {
-  ButtonComponent as MosaikButton,
-  IconComponent as MosaikIcon,
-  PulseComponent as MosaikPulse,
-  StackComponent as MosaikStack,
-  TextComponent as MosaikText,
-} from '@pixel-brewery/mosaik-elements-vue';
+import { ButtonComponent as MosaikButton } from '@pixel-brewery/mosaik-elements-vue/components/button';
+import { IconComponent as MosaikIcon } from '@pixel-brewery/mosaik-elements-vue/components/icon';
+import { PulseComponent as MosaikPulse } from '@pixel-brewery/mosaik-elements-vue/components/pulse';
+import { StackComponent as MosaikStack } from '@pixel-brewery/mosaik-elements-vue/components/stack';
+import { TextComponent as MosaikText } from '@pixel-brewery/mosaik-elements-vue/components/text';
 
 const clicks = ref(0);
 const counterLabel = computed(() => `${clicks.value} ${clicks.value === 1 ? 'click' : 'clicks'}`);
