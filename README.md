@@ -51,7 +51,7 @@ This repository has its own framework/toolchain versions, Mosaik package pins, l
 
 Framework and toolchain upgrades remain independent of Mosaik dependency updates: update this starter, regenerate its lockfile with npm and run all verification commands. The application package is private to prevent accidental npm publication.
 
-Direct and transitive Mosaik packages use one exact release in the manifest and lockfile. The earlier core override is no longer needed following the published casing fix tracked in [the packaging issue](https://github.com/RueDeRennes/mosaik/issues/770).
+Direct and transitive Mosaik packages use one exact release in the manifest and lockfile. The earlier core override is no longer needed following the published casing fix.
 
 ## Mosaik updates
 
@@ -70,6 +70,10 @@ Mosaik packages bypass the default Dependabot cooldown, so a newly published rel
 ## Continuous integration
 
 The repository's CI runs a clean `npm ci`, lint, typecheck, behavior tests and production build. The update checks also verify consistent Mosaik package versions in the manifest and lockfile. CI uses its own GitHub Actions token with `contents: read` and `packages: read`; the package access grants described above apply to both CI and Dependabot. No reusable personal credential is stored in the workflow.
+
+CI runs on pushes, pull requests, merge queues and manual dispatches. The stable `Quality Gate` check succeeds only when the complete `verify` job succeeds; failure, cancellation or a skipped verification job fails the gate. Configure `Quality Gate` as a required branch check after this workflow revision is published and the check has run. Keep `verify` required during that rollout.
+
+The dependency-free public-content guard runs in the existing verification job and rejects excluded private project references in tracked/new source paths, text, symbolic links and decoded gzip archives. Run `node tools/verify-public-content.mjs` and `node --test tools/verify-public-content.spec.mjs` locally. Ignored development output remains outside the source scan.
 
 CI only verifies the application. It does not publish packages, create release tags or deploy a website.
 
