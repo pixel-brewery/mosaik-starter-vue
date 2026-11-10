@@ -47,17 +47,17 @@ The example adapts the Mosaik Studio catalog recipe `recipe-empty-state-card--wi
 
 ## Independent maintenance
 
-This repository has its own framework/toolchain versions, Mosaik package pins, lockfile and CI. It does not depend on an Nx workspace, a Mosaik checkout, the Studio API or a shared Mosaik release workflow.
+This repository has its own framework/toolchain versions, Mosaik package declarations, lockfile and CI. It does not depend on an Nx workspace, a Mosaik checkout, the Studio API or a shared Mosaik release workflow.
 
 Framework and toolchain upgrades remain independent of Mosaik dependency updates: update this starter, regenerate its lockfile with npm and run all verification commands. The application package is private to prevent accidental npm publication.
 
-Direct and transitive Mosaik packages use one exact release in the manifest and lockfile. The earlier core override is no longer needed following the published casing fix.
+The manifest declares every direct Mosaik package as `latest`; the lockfile pins direct and transitive Mosaik packages to one exact release. The earlier core override is no longer needed following the published casing fix.
 
 ## Mosaik updates
 
-`.github/dependabot.yml` checks for updates every day at 04:37 UTC, including weekends, and groups `@pixel-brewery/mosaik-*` updates into one pull request. Updates retain exact package versions and include the committed `package-lock.json`. This replaces manual edits to each Mosaik dependency while keeping framework/toolchain updates separate.
+`.github/dependabot.yml` checks for updates every day at 04:37 UTC, including weekends, and groups `@pixel-brewery/mosaik-*` updates into one pull request. Updates change only the committed `package-lock.json`, while the manifest keeps `latest`. This replaces manual edits to each Mosaik dependency while keeping framework/toolchain updates separate.
 
-Each update pull request still requires review, approval and merge. No automatic merge is configured. CI checks require consistent Mosaik versions alongside the existing lint, type/template checks, counter behavior test and production build.
+Each update pull request still requires review, approval and merge. No automatic merge is configured. CI checks require `latest` declarations and one locked Mosaik release alongside the existing lint, type/template checks, counter behavior test and production build.
 
 For automatic GitHub Packages authentication, grant this repository **Read** access under every required Mosaik package's **Package settings → Manage Actions access**. Repeat this for each starter or repository created from a template. No long-lived Dependabot token is needed. See [GitHub's automatic registry access documentation](https://docs.github.com/en/code-security/concepts/supply-chain-security/automatic-dependabot-access-to-github-registries).
 
@@ -69,7 +69,7 @@ Mosaik packages bypass the default Dependabot cooldown, so a newly published rel
 
 ## Continuous integration
 
-The repository's CI runs a clean `npm ci`, lint, typecheck, behavior tests and production build. The update checks also verify consistent Mosaik package versions in the manifest and lockfile. CI uses its own GitHub Actions token with `contents: read` and `packages: read`; the package access grants described above apply to both CI and Dependabot. No reusable personal credential is stored in the workflow.
+The repository's CI runs a clean `npm ci`, lint, typecheck, behavior tests and production build. The update checks also verify that the manifest declares `latest` and the lockfile pins one Mosaik release. CI uses its own GitHub Actions token with `contents: read` and `packages: read`; the package access grants described above apply to both CI and Dependabot. No reusable personal credential is stored in the workflow.
 
 CI runs on pushes, pull requests, merge queues and manual dispatches. The stable `Quality Gate` check succeeds only when the complete `verify` job succeeds; failure, cancellation or a skipped verification job fails the gate. Configure `Quality Gate` as a required branch check after this workflow revision is published and the check has run. Keep `verify` required during that rollout.
 
