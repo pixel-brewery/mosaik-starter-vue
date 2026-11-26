@@ -1,0 +1,16 @@
+{
+  "repository": "pixel-brewery/mosaik-starter-vue",
+  "repositoryId": 1430734310,
+  "workflowFile": "ci.yml",
+  "workflowName": "CI",
+  "requiredJobs": [
+    "verify",
+    "Quality Gate"
+  ],
+  "postMergeWorkflows": [
+    {
+      "file": "ci.yml"
+    }
+  ],
+  "normalizeMosaikLockRoot": true
+}
