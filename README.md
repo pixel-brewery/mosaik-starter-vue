@@ -57,7 +57,7 @@ The manifest and lockfile declare every direct Mosaik package at one exact stabl
 
 `.github/dependabot.yml` checks every Monday for all dependency and GitHub Actions updates, including major versions. It groups the Mosaik family into one pull request and advances the exact manifest and lockfile versions together, while framework and toolchain groups remain separate.
 
-The trusted controller automatically merges Dependabot updates only after every exact-head check succeeds against the current base. CI checks exact stable declarations and one coherent direct/nested Mosaik release alongside the existing lint, type/template checks, counter behavior test and production build. See [dependency automation](docs/dependabot.md).
+Green Dependabot pull requests merge automatically: once every required check passes, `.github/workflows/dependabot-merge.yml` squash-merges the pull request and dispatches CI on `main` with the merge commit. CI checks exact stable declarations and one coherent direct/nested Mosaik release alongside the existing lint, type/template checks, counter behavior test and production build. See [dependency automation](docs/dependabot.md).
 
 For automatic GitHub Packages authentication, grant this repository **Read** access under every required Mosaik package's **Package settings → Manage Actions access**. Repeat this for each starter or repository created from a template. No long-lived Dependabot token is needed. See [GitHub's automatic registry access documentation](https://docs.github.com/en/code-security/concepts/supply-chain-security/automatic-dependabot-access-to-github-registries).
 
